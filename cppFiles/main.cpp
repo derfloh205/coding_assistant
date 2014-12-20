@@ -81,7 +81,7 @@ void init_c()
 
   // open it
   fstream c_file;
-  c_file.open("programm.c", fstream::out);
+  c_file.open("programm.c", fstream::out); // needs errorhandling ?!
 
   // write a c framework into it
 
@@ -98,7 +98,31 @@ void init_c()
   // close
   c_file.close();
 
+  // create a Makefile
+  system("touch Makefile");
 
+  // open it
+  fstream make_file;
+  make_file.open("Makefile", fstream::out); // needs errorhandling ?!
+
+  // write a standard C Makefile
+
+  make_file << "CC = gcc" << endl;
+  make_file << "CFLAGS = -std=c99 -Wall" << endl;
+  make_file << "LDFLAGS = " << endl;
+  make_file << "SRC = *.c" << endl;
+  make_file << "BIN = a.out" << endl << endl;
+  make_file << "all: CFLAGS += -O2 -fomit-frame-pointer" << endl;
+  make_file << "all: binary" << endl << endl;
+  make_file << "binary: $(SRC)" << endl;
+  make_file << 0xB;
+  make_file << "$(CC) $(CFLAGS) -o $(BIN) $(SRC) $(LDFLAGS)" << endl << endl;
+  make_file << "clean:" << endl;
+  make_file << "  -rm -f $(BIN)" << endl << endl;
+  make_file << "valgrind:" << endl;
+  make_file << "  valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./$(BIN)";
+
+  make_file.close();
 }
 
 void init_cpp()
