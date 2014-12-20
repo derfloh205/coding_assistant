@@ -2,12 +2,11 @@
 // V. alpha 0.1
 // by Schneider Florian
 
-
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <map>
+#include <dirent.h>
 
 #define USAGE_MESSAGE "Usage: ca <command> <command_options>"
 #define INVALID_COMMAND "Error: command not found"
@@ -30,15 +29,51 @@ using std::endl;
 using std::vector;
 using std::map;
 
-int add(vector<string> options)
+bool ignored(std::string name) // used to ignore hidden .name files
+{
+  // ignore "."
+
+  if(name[0] == '.')
+  {
+    return true;
+  }
+
+  return false;
+}
+
+vector<string> getFileList() // used to get the files in the actual folder as string vector
+{
+  vector<string> files_here;
+  // get list of all files within
+
+  DIR *dpdf;
+  struct dirent *epdf;
+
+  dpdf = opendir(".");
+  if (dpdf != NULL)
+  {
+     while (epdf = readdir(dpdf))
+     {
+        
+        if(!ignored(epdf->d_name))
+        {
+          files_here.push_back(epdf->d_name);
+        }     
+     }
+  }
+
+  return files_here;
+}
+
+int add(vector<string> options) // used to add classes, makefiles ect.
 {
   cout << "ADD COMMAND" << endl;
   return NO_ERROR;
 }
 
-int init(vector<string> options)
+int init(vector<string> options) // used to initialize a prepared projectfolder
 {
-  // Check if command has enough options given | 1 option -> size must be 2 or more ?!
+  // Check if command has enough options given
   // the options vector looks like this:
   // {command, option, option, ...}
   //     0       1        2    ...
@@ -46,13 +81,20 @@ int init(vector<string> options)
   // Init command has to look like this
   // ./smart_init init <project_name> <language>
 
-  if(options.size() < 2)
+  if(options.size() < 3)
   {
     return OPTIONS_AMOUNT_ERROR;
   }
 
   cout << "INIT COMMAND" << endl;
 
+  // if yes then extract the two options as strings
+
+  string project_name = options[1];
+  string language = options[2];
+
+  // get file list
+  vector<string> files_here = getFileList();
 
 
   return NO_ERROR;
