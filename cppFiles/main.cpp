@@ -120,6 +120,8 @@ void init_c()
   make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./$(BIN)" << endl;
 
   make_file.close();
+
+  // create the config file
 }
 
 void init_cpp()
