@@ -1,4 +1,4 @@
-SUBMISSION = a.out
+SUBMISSION = ca
 EXECUTABLE = $(SUBMISSION)
 SOURCES    = $(wildcard cppFiles/*.cpp)
 OBJECTS    = $(patsubst %,%,${SOURCES:.cpp=.o})

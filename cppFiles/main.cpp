@@ -114,13 +114,10 @@ void init_c()
   make_file << "BIN = a.out" << endl << endl;
   make_file << "all: CFLAGS += -O2 -fomit-frame-pointer" << endl;
   make_file << "all: binary" << endl << endl;
-  make_file << "binary: $(SRC)" << endl;
-  make_file << 0xB;
-  make_file << "$(CC) $(CFLAGS) -o $(BIN) $(SRC) $(LDFLAGS)" << endl << endl;
-  make_file << "clean:" << endl;
-  make_file << "  -rm -f $(BIN)" << endl << endl;
-  make_file << "valgrind:" << endl;
-  make_file << "  valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./$(BIN)";
+  make_file << "binary: $(SRC) ; $(CC) $(CFLAGS) -o $(BIN) $(SRC) $(LDFLAGS)" 
+  << endl << endl;
+  make_file << "clean: ;-rm -f $(BIN)" << endl << endl;
+  make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./$(BIN)" << endl;
 
   make_file.close();
 }
