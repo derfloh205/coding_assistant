@@ -5,13 +5,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
 #include <dirent.h>
+#include <unistd.h>
+#include <fstream>
+
 
 #define USAGE_MESSAGE "Usage: ca <command> <command_options>"
 #define INVALID_COMMAND "Error: command not found"
 #define UNKNOWN_ERROR "Error: unknown error"
 #define OPTIONS_AMOUNT_MESSAGE "Error: not enough or invalid command options"
+#define PROJECT_NAME_USED_MESSAGE "Error: there is already a file named <project_name>"
 
 #define INIT_C "Initializing C environment..."
 #define INIT_CPP "Initializing C++ environment..."
@@ -20,6 +23,11 @@
 #define INVALID_COMMAND_ERROR 1
 #define USAGE_ERROR 2
 #define OPTIONS_AMOUNT_ERROR 3
+#define PROJECT_NAME_USED_ERROR 4
+
+#define CPP "c++"
+#define CPEPE "cpp"
+#define C "c"
 
 
 
@@ -27,7 +35,7 @@ using std::string;
 using std::cout;
 using std::endl;
 using std::vector;
-using std::map;
+using std::fstream;
 
 bool ignored(std::string name) // used to ignore hidden .name files
 {
@@ -65,6 +73,39 @@ vector<string> getFileList() // used to get the files in the actual folder as st
   return files_here;
 }
 
+void init_c()
+{
+  cout << INIT_C << endl;
+  // create a programm.c
+  system("touch programm.c");
+
+  // open it
+  fstream c_file;
+  c_file.open("programm.c", fstream::out);
+
+  // write a c framework into it
+
+  c_file << "#include <stdio.h>" << endl << endl;
+  c_file << "#define NO_ERROR 0" << endl;
+  c_file << "#define TRUE 1" << endl;
+  c_file << "#define FALSE 0" << endl << endl;
+  c_file << "int main(int argc, char** argv)" << endl;
+  c_file << "{" << endl;
+  c_file << " " << endl;
+  c_file << "  return NO_ERROR;" << endl;
+  c_file << "}";
+
+  // close
+  c_file.close();
+
+
+}
+
+void init_cpp()
+{
+  cout << INIT_CPP << endl;
+}
+
 int add(vector<string> options) // used to add classes, makefiles ect.
 {
   cout << "ADD COMMAND" << endl;
@@ -95,6 +136,47 @@ int init(vector<string> options) // used to initialize a prepared projectfolder
 
   // get file list
   vector<string> files_here = getFileList();
+
+  // check if project_name is already there
+  bool found = false;
+
+  for(auto actual_file: files_here)
+  {
+    if(actual_file == project_name)
+    {
+      found = true;
+      // check if its not a folder
+      if(!opendir(actual_file.c_str()))
+      {
+        return PROJECT_NAME_USED_ERROR;
+      }
+    }
+  }
+  // else check if we found a directory that is named like that
+  if(found)
+  {
+    // then go into it
+    chdir(project_name.c_str());
+  }
+  else
+  {
+    // make one and then go into it
+    string syscom = "mkdir " + project_name;
+    system(syscom.c_str());
+    chdir(project_name.c_str());
+  }
+
+  // now we have to differ between the languages
+  // for now without errorhandling for the init functions
+
+  if(language == C)
+  {
+    init_c();
+  }
+  else if(language == CPP || language == CPEPE)
+  {
+    init_cpp();
+  }
 
 
   return NO_ERROR;
@@ -166,6 +248,12 @@ int main(int argc, char** argv)
       case OPTIONS_AMOUNT_ERROR:
       {
         cout << OPTIONS_AMOUNT_MESSAGE << endl;
+        break;
+      }
+
+      case PROJECT_NAME_USED_ERROR:
+      {
+        cout << PROJECT_NAME_USED_MESSAGE << endl;
         break;
       }
 
