@@ -321,12 +321,6 @@ int install(vector<string> options)
 
 int sort(vector<string> options) // used to sort the actual folder into hFiles and cppFiles
 {
-
-  if(options.size() < 2)
-  {
-    return OPTIONS_AMOUNT_ERROR;
-  }
-
   if(options.size() >= 2)
   {
     if(options[1] == "-m")
