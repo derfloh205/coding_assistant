@@ -544,9 +544,6 @@ int init(vector<string> options) // used to initialize a prepared projectfolder
   // {command, option, option, ...}
   //     0       1        2    ...
 
-  // Init command has to look like this
-  // ./smart_init init <project_name> <language>
-
   if(options.size() < 3)
   {
     return OPTIONS_AMOUNT_ERROR;
@@ -628,12 +625,6 @@ int main(int argc, char** argv)
       string argument = argv[count];
       argument_vector.push_back(argument);
     }
-
-    /*
-    Commands are:
-    new
-    add
-    */
   
     if(argument_vector[0] == "init")
     {
