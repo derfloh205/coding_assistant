@@ -34,7 +34,7 @@ Creates a folder named project_name with a Makefile and two folders in it named
 hFiles and cppFiles. The folders already contain a dummy class and a main.cpp
 ready to be compiled by the Makefile.
 
-<h4>ca add class (not yet implemented)</h4>
+<h4>ca add class</h4>
 
 In a cpp environment, it creates a dummy class with header and cpp file within
 the two folders.
