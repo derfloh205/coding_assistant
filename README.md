@@ -31,6 +31,13 @@ ready to be compiled by the Makefile.
 In a cpp environment, it creates a dummy class with header and cpp file within
 the two folders.
 
+if you give it a name like
+
+ca add class Name
+
+it will create a class.h and class.cpp with the given name
+
+
 <h4>ca ??? (further ideas incoming)</h4>
 
 
