@@ -428,12 +428,8 @@ int add(vector<string> options) // used to add classes, makefiles ect.
 
     chdir("../hFiles");
 
-    // if no error appeared give message
-    cout << "now making class" << endl;
-
     fstream class_to_create;
     class_to_create.open(tmp_name_h, fstream::out);
-
 
     class_to_create << "#ifndef " << class_name << "_H" << endl;
     class_to_create << "#define " << class_name << "_H" << endl << endl;
@@ -488,6 +484,7 @@ int add(vector<string> options) // used to add classes, makefiles ect.
 
     class_to_create_cpp.close();
 
+    cout << "Added class \"" << class_name << "\"." << endl;
   }
   else if(to_add == "makefile")
   {
@@ -526,6 +523,8 @@ int add(vector<string> options) // used to add classes, makefiles ect.
         createMakefile_cpp_undependant(tmp_exec_name);
       }
     }
+
+    cout << "Added Makefile (" << makefile_language << ")" << endl;
 
   }
   else
