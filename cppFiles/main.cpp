@@ -15,6 +15,9 @@
 #define UNKNOWN_ERROR "Error: unknown error"
 #define OPTIONS_AMOUNT_MESSAGE "Error: not enough or invalid command options"
 #define PROJECT_NAME_USED_MESSAGE "Error: there is already a file named <project_name>"
+#define CONFIG_FILE_MESSAGE "Error: ca_config missing! Are you in the right folder?"
+#define NO_CPP_MESSAGE "Error: class adding only available in c++ environment"
+#define CLASS_THERE_MESSAGE "Error: there is already a class with this name"
 
 #define INIT_C "Initializing C environment..."
 #define INIT_CPP "Initializing C++ environment..."
@@ -24,6 +27,9 @@
 #define USAGE_ERROR 2
 #define OPTIONS_AMOUNT_ERROR 3
 #define PROJECT_NAME_USED_ERROR 4
+#define CONFIG_FILE_ERROR 5
+#define NO_CPP_ERROR 6
+#define CLASS_THERE_ERROR 7
 
 #define CPP "c++"
 #define CPEPE "cpp"
@@ -36,6 +42,20 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::fstream;
+
+unsigned int class_number = 1;
+
+vector<string> getCommandOptions(vector<string> &all_options, int position)
+{
+  vector<string> command_options;
+  for(unsigned int count = position; count < all_options.size(); count++)
+  {
+    command_options.push_back(all_options[count]);
+  }
+
+  return command_options;
+}
+
 
 bool ignored(std::string name) // used to ignore hidden .name files
 {
@@ -253,6 +273,141 @@ void init_cpp()
 int add(vector<string> options) // used to add classes, makefiles ect.
 {
   cout << "ADD COMMAND" << endl;
+
+  // add <what>
+
+  if(options.size() < 2)
+  {
+    return OPTIONS_AMOUNT_ERROR;
+  }
+
+  // get config file language
+  fstream config_file;
+  config_file.open("ca_config", fstream::in);
+
+  if(!config_file.is_open())
+  {
+    return CONFIG_FILE_ERROR;
+  }
+
+  string language;
+  config_file >> language;
+
+  if(language != "cpp")
+  {
+    return NO_CPP_ERROR;
+  }
+
+  string to_add;
+  to_add = options[1];
+
+  if(to_add == "class")
+  {
+     // because add what name
+
+    string class_name;
+    if(options.size() == 3)
+    {
+      class_name = options[2];
+    }
+    else
+    {
+      class_name = "CLASS";
+    }
+
+    // test if there is already a class in the hFiles folder with this name
+
+    chdir("hFiles");
+
+    fstream tmp; 
+    string tmp_name_h = class_name + ".h";
+    string tmp_name_cpp = class_name + ".cpp";
+    tmp.open(tmp_name_h, fstream::in);
+    if(tmp.is_open())
+    {
+      tmp.close();
+      return CLASS_THERE_ERROR;  
+    }
+    else
+    {
+      chdir("../cppFiles");
+      tmp.open(tmp_name_cpp, fstream::in);
+      if(tmp.is_open())
+      {
+        tmp.close();
+        return CLASS_THERE_ERROR;
+      }
+    }
+
+    chdir("../hFiles");
+
+    // if no error appeared give message
+    cout << "now making class" << endl;
+
+    fstream class_to_create;
+    class_to_create.open(tmp_name_h, fstream::out);
+
+
+    class_to_create << "#ifndef " << class_name << "_H" << endl;
+    class_to_create << "#define " << class_name << "_H" << endl << endl;
+    class_to_create << "class " << class_name << endl;
+    class_to_create << "{" << endl;
+    class_to_create << "  private:" << endl << endl;
+    class_to_create << "  int value_;" << endl << endl;
+    class_to_create << "  public:" << endl << endl;
+    class_to_create << "  " << class_name << "(int value);" << endl;
+    class_to_create << "  int getValue();" << endl;
+    class_to_create << "  void setValue(int newValue);" << endl;
+    class_to_create << "  void method();" << endl;
+    class_to_create << "};" << endl;
+    class_to_create << "#endif" << endl;
+
+    class_to_create.close();
+
+    // go into cppFiles
+    chdir("../cppFiles");
+
+    // make cpp file
+
+    fstream class_to_create_cpp;
+    class_to_create_cpp.open(tmp_name_cpp, fstream::out);
+
+    class_to_create_cpp << "#include \"../hFiles/" << class_name << ".h\"" << endl << endl;
+    class_to_create_cpp << class_name << "::" << class_name << "(int value) : value_(value)" << endl;
+    class_to_create_cpp << "{" << endl;
+    class_to_create_cpp << "  " << endl;
+    class_to_create_cpp << "}" << endl << endl;
+    class_to_create_cpp << 
+    "//--------------------------------- GETTER -------------------------------------"
+    << endl;
+    class_to_create_cpp << "int " << class_name << "::getValue()" << endl;
+    class_to_create_cpp << "{" << endl;
+    class_to_create_cpp << "  return value_;" << endl;
+    class_to_create_cpp << "}" << endl << endl;
+    class_to_create_cpp <<
+    "//--------------------------------- SETTER -------------------------------------"
+    << endl;
+    class_to_create_cpp << "void " << class_name << "::setValue(int newValue)" << endl;
+    class_to_create_cpp << "{" << endl;
+    class_to_create_cpp << "  value_ = newValue;" << endl;
+    class_to_create_cpp << "}" << endl << endl;
+    class_to_create_cpp <<
+    "//--------------------------------- OTHER --------------------------------------"
+    << endl;
+    class_to_create_cpp << "void " << class_name << "::method()" << endl;
+    class_to_create_cpp << "{" << endl;
+    class_to_create_cpp << "  " << endl;
+    class_to_create_cpp << "}";
+
+    class_to_create_cpp.close();
+
+  }
+  else
+  {
+    return OPTIONS_AMOUNT_ERROR;
+  }
+
+
   return NO_ERROR;
 }
 
@@ -378,25 +533,43 @@ int main(int argc, char** argv)
       case INVALID_COMMAND_ERROR:
       {
         cout << INVALID_COMMAND << endl;
-        break;
+        exit(INVALID_COMMAND_ERROR);
       }
 
       case USAGE_ERROR:
       {
         cout << USAGE_MESSAGE << endl;
-        break;
+        exit(USAGE_ERROR);
       }
 
       case OPTIONS_AMOUNT_ERROR:
       {
         cout << OPTIONS_AMOUNT_MESSAGE << endl;
-        break;
+        exit(OPTIONS_AMOUNT_ERROR);
       }
 
       case PROJECT_NAME_USED_ERROR:
       {
         cout << PROJECT_NAME_USED_MESSAGE << endl;
-        break;
+        exit(PROJECT_NAME_USED_ERROR);
+      }
+
+      case CONFIG_FILE_ERROR:
+      {
+        cout << CONFIG_FILE_MESSAGE << endl;
+        exit(CONFIG_FILE_ERROR);
+      }
+
+      case NO_CPP_ERROR:
+      {
+        cout << NO_CPP_MESSAGE << endl;
+        exit(NO_CPP_ERROR);
+      }
+
+      case CLASS_THERE_ERROR:
+      {
+        cout << CLASS_THERE_MESSAGE << endl;
+        exit(CLASS_THERE_ERROR);
       }
 
       case NO_ERROR:
