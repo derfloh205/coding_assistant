@@ -42,9 +42,9 @@ It is created when a c or a cpp environment is initated.
 
 It looks like this:
 
-<em>language</em>
-<em>option1</em>
-<em>option2</em>
+<em>language</em><br/>
+<em>option1</em><br/>
+<em>option2</em><br/>
 
 For now there will only be the name of the 
 actual environments coding language within!
