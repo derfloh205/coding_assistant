@@ -5,6 +5,14 @@
 Coding_Assistant should be an enhancement to everybody who likes to code plain text
 in linux. It is a simple shell command, providing easy and fast usage.
 
+<h2> SETUP </h2>
+
+Just make it, and then type:
+
+<b>ca install</b>
+
+It will normally ask for superuser rights because it copies itself into the /bin folder
+
 <h2>How do I use it?</h2>
 
 Simply write "ca", the command you want to use and its options afterward like this:
