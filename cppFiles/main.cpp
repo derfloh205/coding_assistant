@@ -16,8 +16,10 @@
 #define OPTIONS_AMOUNT_MESSAGE "Error: not enough or invalid command options"
 #define PROJECT_NAME_USED_MESSAGE "Error: there is already a file named <project_name>"
 #define CONFIG_FILE_MESSAGE "Error: ca_config missing! Are you in the right folder?"
-#define NO_CPP_MESSAGE "Error: class adding only available in c++ environment"
+#define NO_CPP_MESSAGE "Error: only available in c++ environment"
 #define CLASS_THERE_MESSAGE "Error: there is already a class with this name"
+
+#define FINISHED_SORTING "...sorted"
 
 #define INIT_C "Initializing C environment..."
 #define INIT_CPP "Initializing C++ environment..."
@@ -44,6 +46,74 @@ using std::vector;
 using std::fstream;
 
 unsigned int class_number = 1;
+
+void createMakefile_c(string name)
+{
+  fstream make_file;
+  make_file.open("Makefile", fstream::out); // needs errorhandling ?!
+
+  // write a standard C Makefile
+
+  make_file << "CC = gcc" << endl;
+  make_file << "CFLAGS = -std=c99 -Wall" << endl;
+  make_file << "LDFLAGS = " << endl;
+  make_file << "SRC = *.c" << endl;
+  make_file << "BIN = " << name << endl << endl;
+  make_file << "all: CFLAGS += -O2 -fomit-frame-pointer" << endl;
+  make_file << "all: binary" << endl << endl;
+  make_file << "binary: $(SRC) ; $(CC) $(CFLAGS) -o $(BIN) $(SRC) $(LDFLAGS)" 
+  << endl << endl;
+  make_file << "clean: ;-rm -f $(BIN)" << endl << endl;
+  make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./$(BIN)" << endl;
+
+  make_file.close();
+}
+
+void createMakefile_cpp_undependant(string name)
+{
+  fstream make_file;
+  make_file.open("Makefile", fstream::out); // needs errorhandling ?!
+
+  make_file << "SUBMISSION = " << name << endl;
+  make_file << "EXECUTABLE = $(SUBMISSION)" << endl;
+  make_file << "SOURCES    = $(wildcard *.cpp)" << endl;
+  make_file << "OBJECTS    = $(patsubst \%,\%,${SOURCES:.cpp=.o})" << endl;
+  make_file << "CXX        = g++" << endl;
+  make_file << "CXXFLAGS   = -Wall -g -c -std=c++11 -o" << endl;
+  make_file << "LDFLAGS    =" << endl << endl;
+  make_file << "all: $(EXECUTABLE)" 
+  << endl << endl;
+  make_file << "\%.o: \%.cpp ; $(CXX) $(CXXFLAGS) $@ $< -MMD -MF ./$@.d" << endl << endl;
+  make_file << "$(EXECUTABLE) : $(OBJECTS) ; $(CXX) -o $@ $^ $(LDFLAGS)" << endl << endl;
+  make_file << "clean: ; rm -f ./*.o ; rm -f ./*.o.d ; rm -f $(EXECUTABLE)" << endl << endl;
+  make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full ./$(EXECUTABLE)" << endl << endl;
+  make_file << "run: ; ./$(SUBMISSION)" << endl;
+
+  make_file.close();
+}
+
+void createMakefile_cpp_dependant(string name)
+{
+  fstream make_file;
+  make_file.open("Makefile", fstream::out); // needs errorhandling ?!
+
+  make_file << "SUBMISSION = " << name << endl;
+  make_file << "EXECUTABLE = $(SUBMISSION)" << endl;
+  make_file << "SOURCES    = $(wildcard cppFiles/*.cpp)" << endl;
+  make_file << "OBJECTS    = $(patsubst \%,\%,${SOURCES:.cpp=.o})" << endl;
+  make_file << "CXX        = g++" << endl;
+  make_file << "CXXFLAGS   = -Wall -g -c -std=c++11 -o" << endl;
+  make_file << "LDFLAGS    =" << endl << endl;
+  make_file << "all: $(EXECUTABLE)" 
+  << endl << endl;
+  make_file << "\%.o: \%.cpp ; $(CXX) $(CXXFLAGS) $@ $< -MMD -MF ./$@.d" << endl << endl;
+  make_file << "$(EXECUTABLE) : $(OBJECTS) ; $(CXX) -o $@ $^ $(LDFLAGS)" << endl << endl;
+  make_file << "clean: ; rm -f ./cppFiles/*.o ; rm -f ./cppFiles/*.o.d ; rm -f $(EXECUTABLE)" << endl << endl;
+  make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full ./$(EXECUTABLE)" << endl << endl;
+  make_file << "run: ; ./$(SUBMISSION)" << endl;
+
+  make_file.close();
+}
 
 vector<string> getCommandOptions(vector<string> &all_options, int position)
 {
@@ -93,13 +163,15 @@ vector<string> getFileList() // used to get the files in the actual folder as st
   return files_here;
 }
 
-void init_c()
+void init_c(string name)
 {
   cout << INIT_C << endl;
 
+  string file = name + ".c";
+
   // open it
   fstream c_file;
-  c_file.open("programm.c", fstream::out); // needs errorhandling ?!
+  c_file.open(file, fstream::out); // needs errorhandling ?!
 
   // write a c framework into it
 
@@ -109,32 +181,15 @@ void init_c()
   c_file << "#define FALSE 0" << endl << endl;
   c_file << "int main(int argc, char** argv)" << endl;
   c_file << "{" << endl;
-  c_file << " " << endl;
+  c_file << "  printf(\"*Thank you for using Coding Assistant by derfloh205*\\n\");" << endl;
   c_file << "  return NO_ERROR;" << endl;
   c_file << "}";
 
   // close
   c_file.close();
 
-  // open it
-  fstream make_file;
-  make_file.open("Makefile", fstream::out); // needs errorhandling ?!
-
-  // write a standard C Makefile
-
-  make_file << "CC = gcc" << endl;
-  make_file << "CFLAGS = -std=c99 -Wall" << endl;
-  make_file << "LDFLAGS = " << endl;
-  make_file << "SRC = *.c" << endl;
-  make_file << "BIN = a.out" << endl << endl;
-  make_file << "all: CFLAGS += -O2 -fomit-frame-pointer" << endl;
-  make_file << "all: binary" << endl << endl;
-  make_file << "binary: $(SRC) ; $(CC) $(CFLAGS) -o $(BIN) $(SRC) $(LDFLAGS)" 
-  << endl << endl;
-  make_file << "clean: ;-rm -f $(BIN)" << endl << endl;
-  make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./$(BIN)" << endl;
-
-  make_file.close();
+  // create c makefile
+  createMakefile_c(name);
 
   // create the config file
 
@@ -148,7 +203,7 @@ void init_c()
   config_file.close();
 }
 
-void init_cpp()
+void init_cpp(string name)
 {
   cout << INIT_CPP << endl;
   
@@ -156,29 +211,9 @@ void init_cpp()
   system("mkdir cppFiles");
   system("mkdir hFiles");
   
+  // write a standard CPP Makefile, folder dependant
 
-  // make makefile
-  fstream make_file;
-  make_file.open("Makefile", fstream::out); // needs errorhandling ?!
-
-  // write a standard CPP Makefile
-
-  make_file << "SUBMISSION = a.out" << endl;
-  make_file << "EXECUTABLE = $(SUBMISSION)" << endl;
-  make_file << "SOURCES    = $(wildcard cppFiles/*.cpp)" << endl;
-  make_file << "OBJECTS    = $(patsubst \%,\%,${SOURCES:.cpp=.o})" << endl;
-  make_file << "CXX        = g++" << endl;
-  make_file << "CXXFLAGS   = -Wall -g -c -std=c++11 -o" << endl;
-  make_file << "LDFLAGS    =" << endl << endl;
-  make_file << "all: $(EXECUTABLE)" 
-  << endl << endl;
-  make_file << "\%.o: \%.cpp ; $(CXX) $(CXXFLAGS) $@ $< -MMD -MF ./$@.d" << endl << endl;
-  make_file << "$(EXECUTABLE) : $(OBJECTS) ; $(CXX) -o $@ $^ $(LDFLAGS)" << endl << endl;
-  make_file << "clean: ; rm -f ./cppFiles/*.o ; rm -f ./cppFiles/*.o.d ; rm -f $(EXECUTABLE)" << endl << endl;
-  make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full ./$(EXECUTABLE)" << endl << endl;
-  make_file << "run: ; ./$(SUBMISSION)" << endl;
-
-  make_file.close();
+  createMakefile_cpp_dependant(name);
 
   // create the config file
 
@@ -270,10 +305,68 @@ void init_cpp()
   dummy_h.close();
 }
 
+int install(vector<string> options)
+{
+  if(options.size() != 1)
+  {
+    return OPTIONS_AMOUNT_ERROR;
+  }
+
+  cout << "Installing Code Assistant by derfloh205..." << endl;
+  
+  system("sudo cp ca /bin/ca");
+
+  return NO_ERROR; 
+}
+
+int sort(vector<string> options) // used to sort the actual folder into hFiles and cppFiles
+{
+
+  if(options.size() < 2)
+  {
+    return OPTIONS_AMOUNT_ERROR;
+  }
+
+  if(options.size() >= 2)
+  {
+    if(options[1] == "-m")
+    {
+      // also create a makefile when the -m flag was set
+      string tmp_exec_name = "a.out";
+      createMakefile_cpp_dependant(tmp_exec_name);
+    }
+    else
+    {
+      return OPTIONS_AMOUNT_ERROR;
+    }
+  }
+
+  // make two folders
+  system("mkdir hFiles");
+  system("mkdir cppFiles");
+
+  // sort
+  system("mv *.cpp cppFiles/");
+  system("mv *.h hFiles/");
+
+  // create the config file
+
+  fstream config_file;
+  config_file.open("ca_config", fstream::out);
+
+  // for now only write the name of the language
+
+  config_file << "cpp" << endl;
+
+  config_file.close();
+
+  cout << FINISHED_SORTING << endl;
+
+  return NO_ERROR;
+}
+
 int add(vector<string> options) // used to add classes, makefiles ect.
 {
-  cout << "ADD COMMAND" << endl;
-
   // add <what>
 
   if(options.size() < 2)
@@ -281,28 +374,28 @@ int add(vector<string> options) // used to add classes, makefiles ect.
     return OPTIONS_AMOUNT_ERROR;
   }
 
-  // get config file language
-  fstream config_file;
-  config_file.open("ca_config", fstream::in);
-
-  if(!config_file.is_open())
-  {
-    return CONFIG_FILE_ERROR;
-  }
-
-  string language;
-  config_file >> language;
-
-  if(language != "cpp")
-  {
-    return NO_CPP_ERROR;
-  }
-
   string to_add;
   to_add = options[1];
 
   if(to_add == "class")
   {
+
+    // get config file language
+    fstream config_file;
+    config_file.open("ca_config", fstream::in);
+
+    if(!config_file.is_open())
+    {
+      return CONFIG_FILE_ERROR;
+    }
+
+    string language;
+    config_file >> language;
+
+    if(language != "cpp")
+    {
+      return NO_CPP_ERROR;
+    }
      // because add what name
 
     string class_name;
@@ -402,6 +495,45 @@ int add(vector<string> options) // used to add classes, makefiles ect.
     class_to_create_cpp.close();
 
   }
+  else if(to_add == "makefile")
+  {
+    if(options.size() < 3)
+    {
+      return OPTIONS_AMOUNT_ERROR;
+    }
+
+    string makefile_language = options[2];
+   
+    if(makefile_language == "c")
+    {
+      string tmp_exec_name = "a.out";
+      createMakefile_c(tmp_exec_name);
+    }
+    else if(makefile_language == "cpp" || makefile_language == "c++")
+    {
+      if(options.size() >= 4)
+      {
+        // there could be a -f flag for folders
+        if(options[3] == "-f")
+        {
+          // make folder dependent makefile
+          string tmp_exec_name = "a.out";
+          createMakefile_cpp_dependant(tmp_exec_name);
+        }
+        else
+        {
+          return OPTIONS_AMOUNT_ERROR;
+        }
+      }
+      else
+      {
+        // make folder undependant makefile
+        string tmp_exec_name = "a.out";
+        createMakefile_cpp_undependant(tmp_exec_name);
+      }
+    }
+
+  }
   else
   {
     return OPTIONS_AMOUNT_ERROR;
@@ -468,11 +600,11 @@ int init(vector<string> options) // used to initialize a prepared projectfolder
 
   if(language == C)
   {
-    init_c();
+    init_c(project_name);
   }
   else if(language == CPP || language == CPEPE)
   {
-    init_cpp();
+    init_cpp(project_name);
   }
 
 
@@ -517,6 +649,16 @@ int main(int argc, char** argv)
     else if( argument_vector[0] == "add")
     {
       errorcode = add(argument_vector);
+      throw errorcode;
+    }
+    else if(argument_vector[0] == "cppsort" || argument_vector[0] == "c++sort")
+    {
+      errorcode = sort(argument_vector);
+      throw errorcode;
+    }
+    else if(argument_vector[0] == "install")
+    {
+      errorcode = install(argument_vector);
       throw errorcode;
     }
     else

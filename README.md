@@ -3,13 +3,13 @@
 <h2>Introduction</h2>
 
 Coding_Assistant should be an enhancement to everybody who likes to code plain text
-in linux. Its a simple shell command, providing easy and fast usage.
+in linux. It is a simple shell command, providing easy and fast usage.
 
-<How do I use it?>
+<h2>How do I use it?</h2>
 
 Simply write "ca", the command you want to use and its options afterward like this:
 
-  ca command commandoptions
+<b>ca command commandoptions</b>
 
 <h2>Commands</h2>
 
@@ -30,16 +30,26 @@ ready to be compiled by the Makefile.
 
 In a cpp environment, it creates a dummy class with header and cpp file within
 the two folders.
+If you give it a name like:
 
-if you give it a name like
-
-ca add class Name
+<b>ca add class name</b>
 
 it will create a class.h and class.cpp with the given name
 
+<h4>ca add makefile language</h4>
 
-<h4>ca ??? (further ideas incoming)</h4>
+Adds a makefile for the specific given language
+Also possible:
 
+<b>ca add makefile language -f</b>
+
+The -f flag only works with cpp makefile and makes a folder dependant makefile
+that compiles h and cpp files out of folders.
+
+<h4>ca cppsort || ca c++sort</h4>
+
+Sorts the actual folder into hFiles and cppFiles
+With the -m flag it also creates a folder dependant c++ makefile
 
 <h2>ca_config Specification:</h2>
 
@@ -53,5 +63,5 @@ It looks like this:
 <em>option1</em><br/>
 <em>option2</em><br/>
 
-For now there will only be the name of the 
-actual environments coding language within!
+<b>For now there will only be the name of the 
+actual environments coding language within!</b>
