@@ -76,8 +76,6 @@ vector<string> getFileList() // used to get the files in the actual folder as st
 void init_c()
 {
   cout << INIT_C << endl;
-  // create a programm.c
-  system("touch programm.c");
 
   // open it
   fstream c_file;
@@ -97,9 +95,6 @@ void init_c()
 
   // close
   c_file.close();
-
-  // create a Makefile
-  system("touch Makefile");
 
   // open it
   fstream make_file;
@@ -122,11 +117,137 @@ void init_c()
   make_file.close();
 
   // create the config file
+
+  fstream config_file;
+  config_file.open("ca_config", fstream::out);
+
+  // for now only write the name of the language
+
+  config_file << "c" << endl;
+
+  config_file.close();
 }
 
 void init_cpp()
 {
   cout << INIT_CPP << endl;
+  
+  // create file folders
+  system("mkdir cppFiles");
+  system("mkdir hFiles");
+  
+
+  // make makefile
+  fstream make_file;
+  make_file.open("Makefile", fstream::out); // needs errorhandling ?!
+
+  // write a standard CPP Makefile
+
+  make_file << "SUBMISSION = a.out" << endl;
+  make_file << "EXECUTABLE = $(SUBMISSION)" << endl;
+  make_file << "SOURCES    = $(wildcard cppFiles/*.cpp)" << endl;
+  make_file << "OBJECTS    = $(patsubst \%,\%,${SOURCES:.cpp=.o})" << endl;
+  make_file << "CXX        = g++" << endl;
+  make_file << "CXXFLAGS   = -Wall -g -c -std=c++11 -o" << endl;
+  make_file << "LDFLAGS    =" << endl << endl;
+  make_file << "all: $(EXECUTABLE)" 
+  << endl << endl;
+  make_file << "\%.o: \%.cpp ; $(CXX) $(CXXFLAGS) $@ $< -MMD -MF ./$@.d" << endl << endl;
+  make_file << "$(EXECUTABLE) : $(OBJECTS) ; $(CXX) -o $@ $^ $(LDFLAGS)" << endl << endl;
+  make_file << "clean: ; rm -f ./cppFiles/*.o ; rm -f ./cppFiles/*.o.d ; rm -f $(EXECUTABLE)" << endl << endl;
+  make_file << "valgrind: ; valgrind --tool=memcheck --leak-check=full ./$(EXECUTABLE)" << endl << endl;
+  make_file << "run: ; ./$(SUBMISSION)" << endl;
+
+  make_file.close();
+
+  // create the config file
+
+  fstream config_file;
+  config_file.open("ca_config", fstream::out);
+
+  // for now only write the name of the language
+
+  config_file << "cpp" << endl;
+
+  config_file.close();
+
+  // go into the cppFiles folder
+  chdir("cppFiles");
+
+  // create a main.cpp including the dummyclass
+
+  fstream main_file;
+  main_file.open("main.cpp", fstream::out);
+
+  main_file << "#include <iostream>" << endl << endl;
+  main_file << "#include \"../hFiles/CLASS.h\"" << endl << endl;
+  main_file << "#define NO_ERROR 0" << endl << endl;
+  main_file << "using std::cout;" << endl;
+  main_file << "using std::endl;" << endl << endl;
+  main_file << "int main(int argc, char** argv)" << endl;
+  main_file << "{" << endl;
+  main_file << "  cout << \"*Thank you for using Coding Assistant by derfloh205*\" << endl;" << endl;
+  main_file << "  return NO_ERROR;" << endl;
+  main_file << "}" << endl;
+
+  main_file.close();
+
+  // create cpp of dummyclass
+
+  fstream dummy_cpp;
+  dummy_cpp.open("CLASS.cpp", fstream::out);
+
+  dummy_cpp << "#include \"../hFiles/CLASS.h\"" << endl << endl;
+  dummy_cpp << "CLASS::CLASS(int value) : value_(value)" << endl;
+  dummy_cpp << "{" << endl;
+  dummy_cpp << "  " << endl;
+  dummy_cpp << "}" << endl << endl;
+  dummy_cpp << 
+  "//--------------------------------- GETTER -------------------------------------"
+  << endl;
+  dummy_cpp << "int CLASS::getValue()" << endl;
+  dummy_cpp << "{" << endl;
+  dummy_cpp << "  return value_;" << endl;
+  dummy_cpp << "}" << endl << endl;
+  dummy_cpp <<
+  "//--------------------------------- SETTER -------------------------------------"
+  << endl;
+  dummy_cpp << "void CLASS::setValue(int newValue)" << endl;
+  dummy_cpp << "{" << endl;
+  dummy_cpp << "  value_ = newValue;" << endl;
+  dummy_cpp << "}" << endl << endl;
+  dummy_cpp <<
+  "//--------------------------------- OTHER --------------------------------------"
+  << endl;
+  dummy_cpp << "void CLASS::method()" << endl;
+  dummy_cpp << "{" << endl;
+  dummy_cpp << "  " << endl;
+  dummy_cpp << "}";
+
+  dummy_cpp.close();
+
+  // get into hFiles
+  chdir("../hFiles");
+
+  // create header for CLASS
+  fstream dummy_h;
+  dummy_h.open("CLASS.h", fstream::out);
+
+  dummy_h << "#ifndef CLASS_H" << endl;
+  dummy_h << "#define CLASS_H" << endl << endl;
+  dummy_h << "class CLASS" << endl;
+  dummy_h << "{" << endl;
+  dummy_h << "  private:" << endl << endl;
+  dummy_h << "  int value_;" << endl << endl;
+  dummy_h << "  public:" << endl << endl;
+  dummy_h << "  CLASS(int value);" << endl;
+  dummy_h << "  int getValue();" << endl;
+  dummy_h << "  void setValue(int newValue);" << endl;
+  dummy_h << "  void method();" << endl;
+  dummy_h << "};" << endl;
+  dummy_h << "#endif" << endl;
+
+  dummy_h.close();
 }
 
 int add(vector<string> options) // used to add classes, makefiles ect.
@@ -149,8 +270,6 @@ int init(vector<string> options) // used to initialize a prepared projectfolder
   {
     return OPTIONS_AMOUNT_ERROR;
   }
-
-  cout << "INIT COMMAND" << endl;
 
   // if yes then extract the two options as strings
 
