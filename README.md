@@ -58,6 +58,8 @@ that compiles h and cpp files out of folders.
 
 Sorts the actual folder into hFiles and cppFiles
 With the -m flag it also creates a folder dependant c++ makefile
+It does not change the includes of your files!
+But maybe in the future...
 
 <h2>ca_config Specification:</h2>
 
