@@ -1,4 +1,4 @@
-<Introduction>
+<h1>Introduction</h1>
 
 Coding_Assistant should be an enhancement to everybody who likes to code plain text
 in linux. Its a simple shell command, providing easy and fast usage.
