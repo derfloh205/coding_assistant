@@ -9,7 +9,6 @@
 #include <unistd.h>
 #include <fstream>
 
-
 #define USAGE_MESSAGE "Usage: ca <command> <command_options>"
 #define INVALID_COMMAND "Error: command not found"
 #define UNKNOWN_ERROR "Error: unknown error"
@@ -19,7 +18,7 @@
 #define NO_CPP_MESSAGE "Error: only available in c++ environment"
 #define CLASS_THERE_MESSAGE "Error: there is already a class with this name"
 
-#define FINISHED_SORTING "...sorted"
+#define FINISHED_SORTING "Finished sorting! Be sure to check the #includes"
 
 #define INIT_C "Initializing C environment..."
 #define INIT_CPP "Initializing C++ environment..."
@@ -44,8 +43,42 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::fstream;
+using std::ifstream;
 
 unsigned int class_number = 1;
+
+void processIncludes(string file_name)
+{
+  cout << "processIncludes of " << file_name << endl;
+
+  ifstream file(file_name);
+
+  string file_string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+  // now the whole file is in the string
+
+  size_t position = 0;
+
+  // search for includes
+  while((position = file_string.find("#include \"", position)) != string::npos)
+  {
+    // now adjust the include
+    file_string.insert(position + 10, "../hFiles/");
+    position++;
+  }
+
+  fstream new_file;
+  new_file.open(file_name, fstream::trunc | fstream::out);
+
+  if(!new_file.is_open())
+  {
+    return;
+  }
+
+  new_file << file_string;
+
+  new_file.close();
+}
 
 void createMakefile_c(string name)
 {
@@ -353,6 +386,19 @@ int sort(vector<string> options) // used to sort the actual folder into hFiles a
   config_file << "cpp" << endl;
 
   config_file.close();
+
+  // change the includes in the files
+
+  chdir("cppFiles");
+
+  vector<string> files_here = getFileList();
+
+  for(auto actual_file_name: files_here)
+  {
+    processIncludes(actual_file_name);
+  }
+
+  //
 
   cout << FINISHED_SORTING << endl;
 
