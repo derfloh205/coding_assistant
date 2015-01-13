@@ -53,7 +53,7 @@ void processIncludes(string file_name)
 
   ifstream file(file_name);
 
-  string file_string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+  string file_string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()); // make dynamic ?!
 
   // now the whole file is in the string
 
