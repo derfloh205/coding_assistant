@@ -647,6 +647,21 @@ int init(vector<string> options) // used to initialize a prepared projectfolder
   return NO_ERROR;
 }
 
+int showHelp()
+{
+  cout << "Thank you for using coding assistant by derfloh205" << endl << endl;
+  cout << "Command Overview" << endl << endl;
+  cout << "init ............. is used to initialize a c or c++ working environment" << endl << endl;
+  cout << "add .............. is used to add a new c++ class or c/c++ makefile" << endl << endl;
+  cout << "cppsort/c++sort .. is used to initialize a already existing c++ working environment" << endl << endl;
+  cout << ".................. this command also sorts your h and cpp files into folders and changes the includes within" << endl << endl;
+  cout << "install .......... asking for sudo rights, this command will install ca into your bin folder on your linux system" << endl << endl;
+  cout << ".................. so that you can use ca whereever you want" << endl << endl;
+  cout << "help.............. you are using that just now." << endl << endl;
+
+  return NO_ERROR;
+}
+
 int main(int argc, char** argv)
 {
 
@@ -689,6 +704,11 @@ int main(int argc, char** argv)
     else if(argument_vector[0] == "install")
     {
       errorcode = install(argument_vector);
+      throw errorcode;
+    }
+    else if(argument_vector[0] == "help")
+    {
+      errorcode = showHelp();
       throw errorcode;
     }
     else
