@@ -58,8 +58,7 @@ that compiles h and cpp files out of folders.
 
 Sorts the actual folder into hFiles and cppFiles
 With the -m flag it also creates a folder dependant c++ makefile
-It does not change the includes of your files!
-But maybe in the future...
+It changes the includes of your files to keep it compileable
 
 <h2>ca_config Specification:</h2>
 
@@ -75,3 +74,28 @@ It looks like this:
 
 <b>For now there will only be the name of the 
 actual environments coding language within!</b>
+
+<h4>Coming Soon...</h4>
+
+<h2>Get Command</h2>
+
+This could maybe help you retrieve Information for certain algorithms or other stuff 
+from the net or locally
+
+<h2>Icon Command</h2>
+
+A own Command to change the icon of your executeable to anything you want ?
+Why not?
+Difficulty here is to save that there is an icon applied and apply it evertime you compile it with make
+simple version i not complicated...
+
+<h2>Search Command</h2>
+
+Search all your directories from here for a specific word
+but why? there is already a search option in various browsers..
+.. maybe with advanced options? But i dont know what
+
+<h2>Git Supply</h2>
+
+maybe with commands like ca git do or something we can add --all, commit, and push
+within git
