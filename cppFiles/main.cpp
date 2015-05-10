@@ -670,11 +670,23 @@ int gitSupply(vector<string> options)
   }
 
 
+
   if(options[1] == "finish") // I dont know if this name is good
   {
+    // get whole input for commit message
+    string commit_message;
+
+    for(unsigned int actual_string = 2; actual_string < options.size(); actual_string++)
+    {
+      if(actual_string == options.size() - 1)
+      commit_message += options[actual_string];
+      else
+      commit_message += options[actual_string] + " ";
+    }
+
 
     system("git add --all");
-    string commitstring = "git commit -a -m " + options[2]; 
+    string commitstring = "git commit -a -m " + commit_message; 
     system(commitstring.c_str());
     system("git push --all");
   }

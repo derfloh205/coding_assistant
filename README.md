@@ -75,27 +75,31 @@ It looks like this:
 <b>For now there will only be the name of the 
 actual environments coding language within!</b>
 
-<h4>Coming Soon...</h4>
+<h2>Coming Soon...</h2>
 
-<h2>Get Command</h2>
+<h4>Get Command</h4>
 
 This could maybe help you retrieve Information for certain algorithms or other stuff 
 from the net or locally
 
-<h2>Icon Command</h2>
+<h4>Icon Command</h4>
 
 A own Command to change the icon of your executeable to anything you want ?
 Why not?
 Difficulty here is to save that there is an icon applied and apply it evertime you compile it with make
 simple version i not complicated...
 
-<h2>Search Command</h2>
+<h4>Search Command</h4>
 
 Search all your directories from here for a specific word
 but why? there is already a search option in various browsers..
 .. maybe with advanced options? But i dont know what
 
-<h2>Git Supply</h2>
+<h4>Git Supply</h4>
 
-maybe with commands like ca git do or something we can add --all, commit, and push
-within git
+<h5>ca git finish -commitname-</h5>
+
+Does the following:
+> git add --all
+> git commit -a -m -commitname-
+> git push --all
