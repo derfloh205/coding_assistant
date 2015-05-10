@@ -662,6 +662,28 @@ int showHelp()
   return NO_ERROR;
 }
 
+int gitSupply(vector<string> options)
+{
+  if(options.size() < 3)
+  {
+    return OPTIONS_AMOUNT_ERROR;
+  }
+
+
+  if(options[1] == "finish") // I dont know if this name is good
+  {
+
+    system("git add --all");
+    string commitstring = "git commit -a -m " + options[2]; 
+    system(commitstring.c_str());
+    system("git push --all");
+  }
+
+
+  return NO_ERROR;
+
+}
+
 int main(int argc, char** argv)
 {
 
@@ -709,6 +731,11 @@ int main(int argc, char** argv)
     else if(argument_vector[0] == "help")
     {
       errorcode = showHelp();
+      throw errorcode;
+    }
+    else if(argument_vector[0] == "git")
+    {
+      errorcode = gitSupply(argument_vector);
       throw errorcode;
     }
     else
