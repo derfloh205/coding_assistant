@@ -3,7 +3,8 @@
 <h2>Introduction</h2>
 
 Coding_Assistant should be an enhancement to everybody who likes to code plain text
-in linux. It is a simple shell command, providing easy and fast usage.
+in linux. It is a simple shell command, providing easy and fast usage and can e.g. be used
+along with Sublime, Notepad or other Plain Text Editors.
 
 <h2> SETUP </h2>
 
@@ -104,4 +105,4 @@ Does the following:
 > git commit -a -m "-commitname-"
 > git push --all
 
-It supports long commitmessage with more than one single word
+It supports long Commit-Messages with more than one single word
