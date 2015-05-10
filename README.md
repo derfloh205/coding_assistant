@@ -101,5 +101,7 @@ but why? there is already a search option in various browsers..
 
 Does the following:
 > git add --all
-> git commit -a -m -commitname-
+> git commit -a -m "-commitname-"
 > git push --all
+
+It supports long commitmessage with more than one single word
