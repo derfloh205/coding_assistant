@@ -61,6 +61,18 @@ Sorts the actual folder into hFiles and cppFiles
 With the -m flag it also creates a folder dependant c++ makefile
 It changes the includes of your files to keep it compileable
 
+
+<h4>Git Supply</h4>
+
+<h5>ca git finish -commitname-</h5>
+
+Does the following:
+> git add --all
+> git commit -a -m "-commitname-"
+> git push --all
+
+It supports long Commit-Messages with more than one single word
+
 <h2>ca_config Specification:</h2>
 
 The ca_config file is here to make it possible for the user to determine some
@@ -95,14 +107,3 @@ simple version i not complicated...
 Search all your directories from here for a specific word
 but why? there is already a search option in various browsers..
 .. maybe with advanced options? But i dont know what
-
-<h4>Git Supply</h4>
-
-<h5>ca git finish -commitname-</h5>
-
-Does the following:
-> git add --all
-> git commit -a -m "-commitname-"
-> git push --all
-
-It supports long Commit-Messages with more than one single word
