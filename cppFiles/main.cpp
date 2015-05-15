@@ -659,13 +659,14 @@ int showHelp()
 {
   cout << "Thank you for using coding assistant by derfloh205" << endl << endl;
   cout << "Command Overview" << endl << endl;
-  cout << "init ............. is used to initialize a c or c++ working environment, -g flag for git init" << endl << endl;
-  cout << "add .............. is used to add a new c++ class or c/c++ makefile" << endl << endl;
-  cout << "cppsort/c++sort .. is used to initialize a already existing c++ working environment" << endl << endl;
-  cout << ".................. this command also sorts your h and cpp files into folders and changes the includes within" << endl << endl;
-  cout << "install .......... asking for sudo rights, this command will install ca into your bin folder on your linux system" << endl << endl;
-  cout << ".................. so that you can use ca whereever you want" << endl << endl;
-  cout << "help.............. you are using that just now." << endl << endl;
+  cout << "init <name> <language> ... is used to initialize a c or c++ working environment, -g flag for git init" << endl << endl;
+  cout << "add  <what>            ... is used to add a new c++ class or c/c++ makefile" << endl << endl;
+  cout << "cppsort / c++sort      ... is used to initialize a already existing c++ working environment" << endl << endl;
+  cout << "                           this command also sorts your h and cpp files into folders and changes the includes within" << endl << endl;
+  cout << "install                ... asking for sudo rights, this command will install ca into your bin folder on your linux system" << endl << endl;
+  cout << "                           so that you can use ca whereever you want" << endl << endl;
+  cout << "git finish <commit>    ... adds commits and pushes changes in git repository" << endl << endl;
+  cout << "help                   ... you are using that just now." << endl << endl;
 
   return NO_ERROR;
 }
